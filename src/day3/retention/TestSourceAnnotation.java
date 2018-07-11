@@ -1,9 +1,14 @@
 package day3.retention;
 
+import java.io.*;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.Map;
+import java.util.StringTokenizer;
 
 
 public class TestSourceAnnotation {
@@ -57,10 +62,75 @@ public class TestSourceAnnotation {
             return "关闭状态";
         }
     }
+    public static void createFile(){
 
+//        String path= "f:\\yuchao\\测试";//所创建文件的路径
+//
+//        File f = new File(path);
+//
+//        if(!f.exists()){
+//
+//            f.mkdirs();//创建目录
+//        }
+
+        String fileName = "abc.txt";//文件名及类型
+
+        File file = new File( fileName);
+
+        if(!file.exists()){
+
+            try {
+                file.createNewFile();
+            } catch (IOException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
+
+        }
+    }
     public static void main(String[] args) {
         TestSourceAnnotation.setStatus(StausEnum.StatusB);
         System.out.println(getStatusDesc());
+//        createFile();
+        try {
+            readFile();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private static void readFile() throws IOException {
+        BufferedReader br = null;
+        try {
+            br = new BufferedReader(
+                    new InputStreamReader(
+                            new FileInputStream(new File("abc.txt"))));
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+        String str = "";
+        Map<String,String> map = new LinkedHashMap<String,String>();
+        String value = null,key = null;
+        int i = 0;
+        assert br != null;
+        while((str=br.readLine())!=null) {
+            System.out.println(str);
+            if(str.contains("=")) {
+                i++;
+                if(null != value && null != key) {
+                    map.put(key,value);
+                }
+                key = str.substring(0,str.indexOf("="));
+                value = str.substring(str.indexOf("=")+1,str.length());
+                if(i == 3) {
+                    map.put(key,value);
+                } else {
+                    continue;
+                }
+            }
+            value += str;
+        }
+        System.out.println(map);
     }
 
 }
